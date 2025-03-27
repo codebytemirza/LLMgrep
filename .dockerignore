@@ -1,0 +1,11 @@
+.git
+.env
+.env.*
+__pycache__
+*.pyc
+temp_uploads/
+temp_code/
+results/
+configs/
+.gitignore
+README.md
