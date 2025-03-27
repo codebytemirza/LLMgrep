@@ -171,9 +171,6 @@ source .venv/bin/activate
 
 # Install development dependencies
 pip install -r requirements-dev.txt
-
-# Run tests
-pytest tests/
 ```
 
 ## Contributing
