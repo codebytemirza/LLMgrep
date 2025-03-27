@@ -24,8 +24,8 @@ def initialize_session_state():
 
 def configure_page():
     """Configure Streamlit page settings."""
-    st.set_page_config(page_title="SecureCode - Enhanced Security Scanner", layout="wide")
-    st.title("🛡️ SecureCode - Enhanced Security Scanner")
+    st.set_page_config(page_title="LLMGrep - Enhanced Security Scanner", layout="wide", page_icon="🛡️")
+    st.title("🛡️ LLMGrep - Enhanced Security Scanner")
     st.markdown("Combining Semgrep and LLM for intelligent security analysis")
 
 def render_sidebar():
@@ -189,7 +189,7 @@ def main():
 
     # Footer
     st.markdown("---")
-    st.markdown("SecureCode Scanner: Combining Semgrep and LLM for Advanced Vulnerability Detection")
+    st.markdown("LLMGrep Scanner: Combining Semgrep and LLM for Advanced Vulnerability Detection")
 
 if __name__ == "__main__":
     # Register cleanup function
