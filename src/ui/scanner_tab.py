@@ -34,17 +34,21 @@ def render_scanner_tab(scan_target_type, uploaded_file=None, uploaded_files=None
             st.code(code_content)
             target_path = save_uploaded_file(uploaded_file)
             
-        elif scan_target_type == "📂 Upload Folder" and uploaded_files:
+        elif scan_target_type == "📤 Upload Multiple Files" and uploaded_files:  # Changed condition here
             st.info(f"Selected {len(uploaded_files)} files")
-            selected_file = st.selectbox(
-                "Select file to preview:",
-                [file.name for file in uploaded_files]
-            )
-            for file in uploaded_files:
-                if file.name == selected_file:
-                    code_content = file.getvalue().decode("utf-8")
-                    st.code(code_content)
-                    break
+            if uploaded_files:  # Add check if files are uploaded
+                selected_file = st.selectbox(
+                    "Select file to preview:",
+                    [file.name for file in uploaded_files]
+                )
+                for file in uploaded_files:
+                    if file.name == selected_file:
+                        try:
+                            code_content = file.getvalue().decode("utf-8")
+                            st.code(code_content)
+                            break
+                        except Exception as e:
+                            st.error(f"Error reading file {file.name}: {str(e)}")
             
             # Create folder for multiple files
             folder_path = os.path.join("temp_uploads", f"upload_folder_{datetime.now().strftime('%Y%m%d%H%M%S')}")
@@ -62,7 +66,7 @@ def render_scanner_tab(scan_target_type, uploaded_file=None, uploaded_files=None
         # Run analysis button
         if st.button("🔍 Run Security Scan"):
             with st.spinner("Running security analysis..."):
-                semgrep_results = run_semgrep_scan(target_path, metrics_enabled, custom_config, result_tabs[1])
+                semgrep_results = run_semgrep_scan(target_path, metrics_enabled, result_tabs[1])
                 llm_analysis = run_llm_analysis(code_content, semgrep_results, llm_temperature, model_selection, result_tabs[0])
                 
                 report = generate_report(code_content, llm_analysis)
@@ -80,7 +84,7 @@ def render_scanner_tab(scan_target_type, uploaded_file=None, uploaded_files=None
         'report': ""
     }
 
-def run_semgrep_scan(target_path, metrics_enabled, custom_config, result_tab):
+def run_semgrep_scan(target_path, metrics_enabled, result_tab):
     """Run Semgrep scan on the target."""
     if not target_path:
         return {"results": []}
@@ -92,18 +96,8 @@ def run_semgrep_scan(target_path, metrics_enabled, custom_config, result_tab):
     if not metrics_enabled:
         cmd.append("--metrics=off")
     
-    if custom_config:
-        config_dir = "configs"
-        os.makedirs(config_dir, exist_ok=True)
-        config_filename = f"custom_config_{datetime.now().strftime('%Y%m%d%H%M%S')}.yaml"
-        config_file = os.path.join(config_dir, config_filename)
-        with open(config_file, "wb") as f:
-            custom_config.seek(0)
-            f.write(custom_config.read())
-        cmd.append(f"--config={config_file}")
-    else:
-        cmd.append("--config=auto")
-    
+    # Always use auto config
+    cmd.append("--config=auto")
     cmd.append(target_path)
     
     with result_tab:

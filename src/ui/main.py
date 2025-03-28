@@ -97,7 +97,6 @@ def login(username, password):
 
         # Other settings
         metrics_enabled = st.toggle("Enable Metrics", value=False)
-        custom_config = st.file_uploader("📄 Upload Custom Semgrep Rules (.yaml)", type="yaml")
 
         # Advanced settings
         with st.expander("🔧 Advanced Settings"):
@@ -138,7 +137,6 @@ def login(username, password):
             "uploaded_files": uploaded_files,
             "code_input": code_input,
             "metrics_enabled": metrics_enabled,
-            "custom_config": custom_config,
             "llm_temperature": llm_temperature,
             "model_selection": model_selection
         }
